@@ -2,6 +2,7 @@ package com.example.rabbitmq.controller;
 
 import com.example.rabbitmq.service.RabbitMQSender;
 import com.example.rabbitmq.model.Employee;
+import com.example.rabbitmq.service.TaskReceiver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,9 @@ public class RabbitMQWebController {
     @Autowired
     RabbitMQSender rabbitMQSender;
 
+    @Autowired
+    TaskReceiver taskReceiver;
+
     /**
      * check/producer?empName=emp1&empId=emp001
      *
@@ -27,11 +31,24 @@ public class RabbitMQWebController {
     public String producer(@RequestParam("empName") String empName,@RequestParam("empId") String empId) {
 
         Employee emp=new Employee();
-        emp.setEmpId(empId);
+        emp.setEmpId(empId+" Sent from Instance 1");
         emp.setEmpName(empName);
         rabbitMQSender.send(emp);
-
-        return "Message sent to the RabbitMQ JavaInUse Successfully";
+        return "Message sent to the RabbitMQ JavaInUse Successfully \n Name: "+empName+"\n Id: "+empId;
     }
+
+
+    /**
+     * check/consume?empName=emp1
+     * @param empName
+     * @param empId
+     * @return
+     */
+
+//    @GetMapping(value = "/consume")
+//    public void consume(@RequestParam("empName") String empName) throws InterruptedException {
+//
+//         taskReceiver.receive(empName);
+//    }
 }
 
